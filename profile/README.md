@@ -14,4 +14,8 @@ A collection of vibecoded slop (Opus 5.5 <3) made by me ([Hazelcaffe](https://gi
     <td><a href="https://github.com/wonderhoy-labs/otori"><img src="https://raw.githubusercontent.com/wonderhoy-labs/.github/main/profile/icons/otori.png" alt="" width="64" height="64"></a></td>
     <td><a href="https://github.com/wonderhoy-labs/otori"><strong>Otori</strong></a><br>A faithful recreation of Dynamic Island for Android with support for controlling media</td>
   </tr>
+  <tr>
+    <td><a href="https://github.com/wonderhoy-labs/saki"><img src="https://raw.githubusercontent.com/wonderhoy-labs/.github/main/profile/icons/saki.png" alt="" width="64" height="64"></a></td>
+    <td><a href="https://github.com/wonderhoy-labs/saki"><strong>Saki</strong></a><br>Full-duplex networking over Bluetooth between Android, macOS and Linux</td>
+  </tr>
 </table>
