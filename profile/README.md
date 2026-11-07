@@ -18,4 +18,8 @@ A collection of vibecoded slop (Opus 5.5 <3) made by me ([Hazelcaffe](https://gi
     <td><a href="https://github.com/wonderhoy-labs/saki"><img src="https://raw.githubusercontent.com/wonderhoy-labs/.github/main/profile/icons/saki.png" alt="" width="64" height="64"></a></td>
     <td><a href="https://github.com/wonderhoy-labs/saki"><strong>Saki</strong></a><br>Full-duplex networking over Bluetooth between Android, macOS and Linux</td>
   </tr>
+  <tr>
+    <td><a href="https://github.com/wonderhoy-labs/akiyama"><img src="https://raw.githubusercontent.com/wonderhoy-labs/.github/main/profile/icons/akiyama.png" alt="" width="64" height="64"></a></td>
+    <td><a href="https://github.com/wonderhoy-labs/akiyama"><strong>Akiyama</strong></a><br>Full-duplex networking over a USB cable between Android, macOS, Linux and Windows</td>
+  </tr>
 </table>
