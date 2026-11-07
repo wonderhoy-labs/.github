@@ -22,4 +22,8 @@ A collection of vibecoded slop (Opus 5.5 <3) made by me ([Hazelcaffe](https://gi
     <td><a href="https://github.com/wonderhoy-labs/akiyama"><img src="https://raw.githubusercontent.com/wonderhoy-labs/.github/main/profile/icons/akiyama.png" alt="" width="64" height="64"></a></td>
     <td><a href="https://github.com/wonderhoy-labs/akiyama"><strong>Akiyama</strong></a><br>Full-duplex networking over a USB cable between Android, macOS, Linux and Windows</td>
   </tr>
+  <tr>
+    <td><a href="https://github.com/wonderhoy-labs/shira"><img src="https://raw.githubusercontent.com/wonderhoy-labs/.github/main/profile/icons/shira.png" alt="" width="64" height="64"></a></td>
+    <td><a href="https://github.com/wonderhoy-labs/shira"><strong>Shira</strong></a><br>Get your Android phone online through a browser tab, over a USB cable and a Wisp server</td>
+  </tr>
 </table>
