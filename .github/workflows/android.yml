@@ -28,6 +28,14 @@ on:
         description: Android platform to compile against
         type: string
         default: android-37.0
+      download-artifact:
+        description: An artifact from an earlier job to download into $RUNNER_TEMP/artifact before building
+        type: string
+        default: ''
+      prepare:
+        description: A command run at the top of the repository before building, such as unpacking that artifact
+        type: string
+        default: ''
     # Without a key the APK is signed with a throwaway debug key, so it can't update an installed release.
     secrets:
       KEYSTORE_BASE64:
@@ -71,6 +79,16 @@ jobs:
           cache-bin: true
       - if: inputs.rust-targets != ''
         run: command -v cargo-ndk || cargo install cargo-ndk --locked
+      - if: inputs.download-artifact != ''
+        uses: actions/download-artifact@v8
+        with:
+          name: ${{ inputs.download-artifact }}
+          path: ${{ runner.temp }}/artifact
+      - name: Prepare
+        if: inputs.prepare != ''
+        env:
+          PREPARE: ${{ inputs.prepare }}
+        run: bash -c "$PREPARE"
       - name: Build
         working-directory: android
         env:

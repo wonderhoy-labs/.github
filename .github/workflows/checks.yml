@@ -26,3 +26,6 @@ jobs:
       # Fails on anything the guideline requires, and warns where shared files differ from the template.
       - name: Guideline
         run: pnpm unify --remote
+      # A project's own checks, such as generated files being current, as a "verify" script in package.json.
+      - name: Project checks
+        run: pnpm run --if-present verify
