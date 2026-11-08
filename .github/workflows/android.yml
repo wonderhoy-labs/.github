@@ -36,6 +36,13 @@ on:
         description: A command run at the top of the repository before building, such as unpacking that artifact
         type: string
         default: ''
+      library-files:
+        description: >-
+          Android libraries the build made, as paths from android/, one per line, such as
+          tunnel/build/outputs/aar/tunnel-release.aar. Each is uploaded as <name>-<module>-<VERSION>.aar in <name>-android-library.
+          Empty for none.
+        type: string
+        default: ''
     # Without a key the APK is signed with a throwaway debug key, so it can't update an installed release.
     secrets:
       KEYSTORE_BASE64:
@@ -116,4 +123,26 @@ jobs:
         with:
           name: ${{ inputs.name }}-apk
           path: ${{ inputs.name }}.apk
+          if-no-files-found: error
+      # Named <project>-<module>-<version>.aar, which is what a Gradle Ivy repository on the releases asks for.
+      - name: Name the libraries
+        if: inputs.library-files != ''
+        env:
+          NAME: ${{ inputs.name }}
+          FILES: ${{ inputs.library-files }}
+        run: |
+          version=$(cat VERSION)
+          mkdir -p "$RUNNER_TEMP/library"
+          while read -r file; do
+            [ -n "$file" ] || continue
+            module=$(basename "$file" .aar)
+            module=${module%-release}
+            cp "android/$file" "$RUNNER_TEMP/library/$NAME-$module-$version.aar"
+          done <<< "$FILES"
+          ls -l "$RUNNER_TEMP/library"
+      - if: inputs.library-files != ''
+        uses: actions/upload-artifact@v7
+        with:
+          name: ${{ inputs.name }}-android-library
+          path: ${{ runner.temp }}/library/*.aar
           if-no-files-found: error

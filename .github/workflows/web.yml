@@ -20,6 +20,10 @@ on:
         description: Publish web/dist to GitHub Pages on pushes to main
         type: boolean
         default: true
+      library:
+        description: A TypeScript library in packages/ to test and pack, uploaded as <library>-library for releases. Empty for none.
+        type: string
+        default: ''
 
 permissions:
   contents: read
@@ -48,6 +52,11 @@ jobs:
         run: |
           mkdir -p "$(dirname "$APK_PATH")"
           mv "$RUNNER_TEMP"/apk/*.apk "$APK_PATH"
+      - name: Test the library
+        if: inputs.library != ''
+        env:
+          LIBRARY: ${{ inputs.library }}
+        run: pnpm --dir "packages/$LIBRARY" test
       - name: Test
         working-directory: web
         run: pnpm test
@@ -60,6 +69,18 @@ jobs:
         env:
           VERIFY: ${{ inputs.verify }}
         run: bash -c "$VERIFY"
+      # Packing builds the library, and copies in the APK that's already at apk-path for it to carry.
+      - name: Pack the library
+        if: inputs.library != ''
+        env:
+          LIBRARY: ${{ inputs.library }}
+        run: pnpm --dir "packages/$LIBRARY" pack --pack-destination "$RUNNER_TEMP/library"
+      - if: inputs.library != ''
+        uses: actions/upload-artifact@v7
+        with:
+          name: ${{ inputs.library }}-library
+          path: ${{ runner.temp }}/library/*.tgz
+          if-no-files-found: error
       - if: inputs.pages
         uses: actions/upload-pages-artifact@v5
         with:
