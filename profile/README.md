@@ -19,6 +19,10 @@ A collection of vibecoded slop (Opus 5.5 <3) made by me ([Hazelcaffe](https://gi
     <td><a href="https://github.com/wonderhoy-labs/otori"><strong>Otori</strong></a><br>A faithful recreation of Dynamic Island for Android with support for controlling media</td>
   </tr>
   <tr>
+    <td><a href="https://github.com/wonderhoy-labs/shinonome"><img src="https://raw.githubusercontent.com/wonderhoy-labs/.github/main/profile/icons/shinonome.png" alt="" width="64" height="64"></a></td>
+    <td><a href="https://github.com/wonderhoy-labs/shinonome"><strong>Shinonome</strong></a><br>Use the Pixel Desktop without a physical monitor on any OS, your browser, and even the phone itself</td>
+  </tr>
+  <tr>
     <td><a href="https://github.com/wonderhoy-labs/shira"><img src="https://raw.githubusercontent.com/wonderhoy-labs/.github/main/profile/icons/shira.png" alt="" width="64" height="64"></a></td>
     <td><a href="https://github.com/wonderhoy-labs/shira"><strong>Shira</strong></a><br>Get your Android phone online through a browser tab, over a USB cable and a Wisp server</td>
   </tr>
