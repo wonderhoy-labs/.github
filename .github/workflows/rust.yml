@@ -24,6 +24,10 @@ on:
         description: Ubuntu packages the build needs
         type: string
         default: ''
+      linux-rustflags:
+        description: RUSTFLAGS for the Linux release builds, such as -C linker=rust-lld for static musl binaries
+        type: string
+        default: ''
 
 permissions:
   contents: read
@@ -84,6 +88,11 @@ jobs:
         run: |
           read -ra packages <<< "$PACKAGES"
           sudo apt-get update && sudo apt-get install -y "${packages[@]}"
+      - name: Set Linux RUSTFLAGS
+        if: runner.os == 'Linux' && inputs.linux-rustflags != ''
+        env:
+          FLAGS: ${{ inputs.linux-rustflags }}
+        run: echo "RUSTFLAGS=$FLAGS" >> "$GITHUB_ENV"
       - run: cargo build --release --locked -p "$PACKAGE" --target "$TARGET"
         shell: bash
       - name: Package
