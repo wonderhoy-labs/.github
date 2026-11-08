@@ -1,0 +1,101 @@
+# Reusable: Spotless, unit tests, Android lint and a release APK, signed when the caller passes its key.
+name: Android
+
+on:
+  workflow_call:
+    inputs:
+      name:
+        description: Lowercase project id. The APK is uploaded as <name>-apk, holding <name>.apk.
+        type: string
+        required: true
+      env-prefix:
+        description: Prefix of the signing variables app/build.gradle.kts reads, such as SAKI for SAKI_KEYSTORE
+        type: string
+        required: true
+      gradle-tasks:
+        description: What to run in android/
+        type: string
+        default: spotlessCheck :app:testDebugUnitTest :app:lintRelease :app:assembleRelease
+      rust-targets:
+        description: Comma-separated Rust Android targets, for apps with Rust inside. Empty for none.
+        type: string
+        default: ''
+      ndk:
+        description: NDK version to install with the Rust targets
+        type: string
+        default: 30.0.16248370
+      platform:
+        description: Android platform to compile against
+        type: string
+        default: android-37.0
+    # Without a key the APK is signed with a throwaway debug key, so it can't update an installed release.
+    secrets:
+      KEYSTORE_BASE64:
+        required: false
+      KEYSTORE_PASSWORD:
+        required: false
+      KEY_ALIAS:
+        required: false
+      KEY_PASSWORD:
+        required: false
+
+permissions:
+  contents: read
+
+jobs:
+  android:
+    name: Build the APK
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: 17
+      - uses: gradle/actions/setup-gradle@v6.4.0
+      - name: Install the Android platform
+        env:
+          PLATFORM: ${{ inputs.platform }}
+          NDK: ${{ inputs.rust-targets != '' && inputs.ndk || '' }}
+        run: |
+          yes | "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --licenses > /dev/null
+          "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" "platforms;$PLATFORM" ${NDK:+"ndk;$NDK"}
+      - if: inputs.rust-targets != ''
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ inputs.rust-targets }}
+      - if: inputs.rust-targets != ''
+        uses: Swatinem/rust-cache@v2.9.2
+        with:
+          key: android
+          cache-bin: true
+      - if: inputs.rust-targets != ''
+        run: command -v cargo-ndk || cargo install cargo-ndk --locked
+      - name: Build
+        working-directory: android
+        env:
+          PREFIX: ${{ inputs.env-prefix }}
+          TASKS: ${{ inputs.gradle-tasks }}
+          KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+        run: |
+          if [ -n "$KEYSTORE_BASE64" ]; then
+            echo "$KEYSTORE_BASE64" | base64 -d > "$RUNNER_TEMP/release.keystore"
+            export "${PREFIX}_KEYSTORE=$RUNNER_TEMP/release.keystore"
+            export "${PREFIX}_KEYSTORE_PASSWORD=$KEYSTORE_PASSWORD"
+            export "${PREFIX}_KEY_ALIAS=$KEY_ALIAS"
+            export "${PREFIX}_KEY_PASSWORD=$KEY_PASSWORD"
+          fi
+          read -ra tasks <<< "$TASKS"
+          ./gradlew "${tasks[@]}" --no-daemon
+      - name: Name the APK
+        env:
+          NAME: ${{ inputs.name }}
+        run: cp android/app/build/outputs/apk/release/app-release.apk "$NAME.apk"
+      - uses: actions/upload-artifact@v7
+        with:
+          name: ${{ inputs.name }}-apk
+          path: ${{ inputs.name }}.apk
+          if-no-files-found: error

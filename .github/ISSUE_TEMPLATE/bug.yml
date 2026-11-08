@@ -1,0 +1,32 @@
+name: Something's wrong
+description: It didn't work, or did something it shouldn't have.
+labels: [bug]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened
+      description: What you did, what you expected, and what happened instead.
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Version
+      description: From the app, the release page, or `--version`.
+      placeholder: 0.1.0
+    validations:
+      required: true
+  - type: textarea
+    id: devices
+    attributes:
+      label: Devices
+      description: Every device involved, with its OS version. A Pixel 10 Pro on Android 17 and a Mac on macOS 27, say.
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs
+      description: Anything the app or command printed. Take out anything private first.
+      render: text

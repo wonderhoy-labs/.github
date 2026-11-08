@@ -1,0 +1,57 @@
+# Reusable: publishes everything the other jobs uploaded as a GitHub release, for a tag like v0.1.0.
+name: Release
+
+on:
+  workflow_call:
+    inputs:
+      title:
+        description: The product name, as people read it
+        type: string
+        required: true
+
+permissions:
+  contents: read
+
+jobs:
+  release:
+    name: Publish ${{ inputs.title }}
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+      id-token: write
+      attestations: write
+    steps:
+      - uses: actions/checkout@v7
+      - name: Check the tag matches VERSION
+        env:
+          TAG: ${{ github.ref_name }}
+        run: |
+          if [ "v$(cat VERSION)" != "$TAG" ]; then
+            echo "::error::The tag $TAG doesn't match VERSION, which says $(cat VERSION)."
+            exit 1
+          fi
+      - uses: actions/download-artifact@v8
+        with:
+          path: dist
+          merge-multiple: true
+      - name: Name and sum the files
+        working-directory: dist
+        env:
+          TAG: ${{ github.ref_name }}
+        run: |
+          # The Pages build isn't part of a release.
+          rm -f artifact.tar
+          for apk in *.apk; do
+            [ -e "$apk" ] && mv "$apk" "${apk%.apk}-$TAG.apk"
+          done
+          sha256sum -- * > SHA256SUMS
+          cat SHA256SUMS
+      - uses: actions/attest-build-provenance@v4
+        with:
+          subject-path: dist/*
+      - name: Publish
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ github.ref_name }}
+          TITLE: ${{ inputs.title }}
+        run: gh release create "$TAG" --title "$TITLE ${TAG#v}" --verify-tag --generate-notes -- dist/*

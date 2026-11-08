@@ -1,0 +1,102 @@
+# Reusable: rustfmt, Clippy and tests on each OS, then release binaries for every target.
+name: Rust
+
+on:
+  workflow_call:
+    inputs:
+      test-os:
+        description: JSON list of runners to test on
+        type: string
+        default: '["ubuntu-24.04", "macos-latest"]'
+      package:
+        description: Cargo package with the binary to ship. Empty to only test.
+        type: string
+        default: ''
+      binary:
+        description: Name of that binary, if it isn't the package name
+        type: string
+        default: ''
+      targets:
+        description: 'JSON list of {"os": runner, "target": Rust target} to build the binary for'
+        type: string
+        default: '[]'
+      apt-packages:
+        description: Ubuntu packages the build needs
+        type: string
+        default: ''
+
+permissions:
+  contents: read
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  test:
+    name: Test on ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: ${{ fromJSON(inputs.test-os) }}
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v7
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: clippy, rustfmt
+      - uses: Swatinem/rust-cache@v2.9.2
+      - name: Install system packages
+        if: runner.os == 'Linux' && inputs.apt-packages != ''
+        env:
+          PACKAGES: ${{ inputs.apt-packages }}
+        run: |
+          read -ra packages <<< "$PACKAGES"
+          sudo apt-get update && sudo apt-get install -y "${packages[@]}"
+      - run: cargo fmt --all --check
+      - run: cargo clippy --workspace --all-targets --locked -- -D warnings
+      - run: cargo test --workspace --locked
+
+  build:
+    name: Build ${{ matrix.target }}
+    if: inputs.package != ''
+    needs: test
+    strategy:
+      fail-fast: false
+      matrix:
+        include: ${{ fromJSON(inputs.targets) }}
+    runs-on: ${{ matrix.os }}
+    env:
+      TARGET: ${{ matrix.target }}
+      PACKAGE: ${{ inputs.package }}
+      BINARY: ${{ inputs.binary || inputs.package }}
+    steps:
+      - uses: actions/checkout@v7
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ matrix.target }}
+      - uses: Swatinem/rust-cache@v2.9.2
+        with:
+          key: ${{ matrix.target }}
+      - name: Install system packages
+        if: runner.os == 'Linux' && inputs.apt-packages != ''
+        env:
+          PACKAGES: ${{ inputs.apt-packages }}
+        run: |
+          read -ra packages <<< "$PACKAGES"
+          sudo apt-get update && sudo apt-get install -y "${packages[@]}"
+      - run: cargo build --release --locked -p "$PACKAGE" --target "$TARGET"
+        shell: bash
+      - name: Package
+        shell: bash
+        run: |
+          dir="target/$TARGET/release"
+          if [[ "$TARGET" == *windows* ]]; then
+            (cd "$dir" && 7z a "$GITHUB_WORKSPACE/$BINARY-$TARGET.zip" "$BINARY.exe")
+          else
+            tar -czf "$BINARY-$TARGET.tar.gz" -C "$dir" "$BINARY"
+          fi
+      - uses: actions/upload-artifact@v7
+        with:
+          name: ${{ env.BINARY }}-${{ matrix.target }}
+          path: ${{ env.BINARY }}-${{ matrix.target }}.*
+          if-no-files-found: error

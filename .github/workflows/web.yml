@@ -1,0 +1,82 @@
+# Reusable: tests and builds web/ with pnpm, and publishes it to GitHub Pages from main.
+name: Web
+
+on:
+  workflow_call:
+    inputs:
+      apk-artifact:
+        description: Artifact holding an APK the site serves, from android.yml. Empty for none.
+        type: string
+        default: ''
+      apk-path:
+        description: Where the site's build looks for that APK
+        type: string
+        default: android/app/build/outputs/apk/release/app-release.apk
+      verify:
+        description: A command run in web/ after the build, such as one that checks committed output is current
+        type: string
+        default: ''
+      pages:
+        description: Publish web/dist to GitHub Pages on pushes to main
+        type: boolean
+        default: true
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Test and build
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v7
+      - uses: pnpm/action-setup@v6.1.0
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - if: inputs.apk-artifact != ''
+        uses: actions/download-artifact@v8
+        with:
+          name: ${{ inputs.apk-artifact }}
+          path: ${{ runner.temp }}/apk
+      - name: Put the APK where the site expects it
+        if: inputs.apk-artifact != ''
+        env:
+          APK_PATH: ${{ inputs.apk-path }}
+        run: |
+          mkdir -p "$(dirname "$APK_PATH")"
+          mv "$RUNNER_TEMP"/apk/*.apk "$APK_PATH"
+      - name: Test
+        working-directory: web
+        run: pnpm test
+      - name: Build
+        working-directory: web
+        run: pnpm run build
+      - name: Verify
+        if: inputs.verify != ''
+        working-directory: web
+        env:
+          VERIFY: ${{ inputs.verify }}
+        run: bash -c "$VERIFY"
+      - if: inputs.pages
+        uses: actions/upload-pages-artifact@v5
+        with:
+          path: web/dist
+
+  # The repository's Pages source has to be GitHub Actions.
+  deploy:
+    name: Publish to GitHub Pages
+    if: inputs.pages && github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: build
+    runs-on: ubuntu-24.04
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - id: deploy
+        uses: actions/deploy-pages@v5

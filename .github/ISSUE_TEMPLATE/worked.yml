@@ -1,0 +1,23 @@
+name: It worked
+description: Tell us it ran on something we haven't tested. That helps as much as a bug report.
+labels: [tested]
+body:
+  - type: input
+    id: version
+    attributes:
+      label: Version
+      placeholder: 0.1.0
+    validations:
+      required: true
+  - type: textarea
+    id: devices
+    attributes:
+      label: Devices
+      description: Every device involved, with its OS version.
+    validations:
+      required: true
+  - type: textarea
+    id: notes
+    attributes:
+      label: Anything worth knowing
+      description: Speeds, quirks, what you used it for.
