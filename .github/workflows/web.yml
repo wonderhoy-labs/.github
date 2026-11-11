@@ -1,4 +1,5 @@
-# Reusable: tests and builds web/ with pnpm, and publishes it to GitHub Pages from main.
+# Reusable: tests and builds web/ with pnpm, and publishes it to GitHub Pages from main. A repository with a library
+# in packages/ and no web/ uses it only to test and pack the library, with pages: false.
 name: Web
 
 on:
@@ -58,13 +59,15 @@ jobs:
           LIBRARY: ${{ inputs.library }}
         run: pnpm --dir "packages/$LIBRARY" test
       - name: Test
+        if: hashFiles('web/package.json') != ''
         working-directory: web
         run: pnpm test
       - name: Build
+        if: hashFiles('web/package.json') != ''
         working-directory: web
         run: pnpm run build
       - name: Verify
-        if: inputs.verify != ''
+        if: inputs.verify != '' && hashFiles('web/package.json') != ''
         working-directory: web
         env:
           VERIFY: ${{ inputs.verify }}
@@ -81,7 +84,7 @@ jobs:
           name: ${{ inputs.library }}-library
           path: ${{ runner.temp }}/library/*.tgz
           if-no-files-found: error
-      - if: inputs.pages
+      - if: inputs.pages && hashFiles('web/package.json') != ''
         uses: actions/upload-pages-artifact@v5
         with:
           path: web/dist
