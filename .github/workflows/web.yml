@@ -25,6 +25,14 @@ on:
         description: A TypeScript library in packages/ to test and pack, uploaded as <library>-library for releases. Empty for none.
         type: string
         default: ''
+      release-files:
+        description: Files the build leaves in web/dist that a release carries, such as a signed web bundle (a glob). Empty for none.
+        type: string
+        default: ''
+    secrets:
+      WEB_BUNDLE_KEY:
+        description: The key that signs an Isolated Web App's web bundle, given to the build as WEB_BUNDLE_KEY
+        required: false
 
 permissions:
   contents: read
@@ -65,6 +73,8 @@ jobs:
       - name: Build
         if: hashFiles('web/package.json') != ''
         working-directory: web
+        env:
+          WEB_BUNDLE_KEY: ${{ secrets.WEB_BUNDLE_KEY }}
         run: pnpm run build
       - name: Verify
         if: inputs.verify != '' && hashFiles('web/package.json') != ''
@@ -83,6 +93,12 @@ jobs:
         with:
           name: ${{ inputs.library }}-library
           path: ${{ runner.temp }}/library/*.tgz
+          if-no-files-found: error
+      - if: inputs.release-files != ''
+        uses: actions/upload-artifact@v7
+        with:
+          name: web-release
+          path: web/dist/${{ inputs.release-files }}
           if-no-files-found: error
       - if: inputs.pages && hashFiles('web/package.json') != ''
         uses: actions/upload-pages-artifact@v5
