@@ -7,6 +7,10 @@ A collection of vibecoded slop (Opus 5.5 <3) made by me ([Hazelcaffe](https://gi
 
 <table>
   <tr>
+    <td><a href="https://github.com/wonderhoy-labs/minori"><img src="https://raw.githubusercontent.com/wonderhoy-labs/.github/main/profile/icons/minori.png" alt="" width="64" height="64"></a></td>
+    <td><a href="https://github.com/wonderhoy-labs/minori"><strong>Minori</strong></a><br>Your Pixel's hypervisor.</td>
+  </tr>
+  <tr>
     <td><a href="https://github.com/wonderhoy-labs/asahi"><img src="https://raw.githubusercontent.com/wonderhoy-labs/.github/main/profile/icons/asahi.png" alt="" width="64" height="64"></a></td>
     <td><a href="https://github.com/wonderhoy-labs/asahi"><strong>Asahi</strong></a><br>Shira and Shinonome in one: your Pixel's desktop in a browser tab, online through the same USB cable</td>
   </tr>
@@ -33,9 +37,5 @@ A collection of vibecoded slop (Opus 5.5 <3) made by me ([Hazelcaffe](https://gi
   <tr>
     <td><a href="https://github.com/wonderhoy-labs/saki"><img src="https://raw.githubusercontent.com/wonderhoy-labs/.github/main/profile/icons/saki.png" alt="" width="64" height="64"></a></td>
     <td><a href="https://github.com/wonderhoy-labs/saki"><strong>Saki</strong></a><br>Full-duplex networking over Bluetooth between Android, macOS and Linux</td>
-  </tr>
-  <tr>
-    <td><a href="https://github.com/wonderhoy-labs/minori"><img src="https://raw.githubusercontent.com/wonderhoy-labs/.github/main/profile/icons/minori.png" alt="" width="64" height="64"></a></td>
-    <td><a href="https://github.com/wonderhoy-labs/minori"><strong>Minori</strong></a><br>Virtual machines on your Pixel: Debian, Ubuntu, Fedora and desktops from a store, through Android's Virtualization Framework</td>
   </tr>
 </table>
