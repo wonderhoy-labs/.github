@@ -31,15 +31,15 @@ A collection of vibecoded slop (Opus 5.5 <3) made by me ([Hazelcaffe](https://gi
     <td><a href="https://github.com/wonderhoy-labs/shira"><strong>Shira</strong></a><br>Get your Android phone online through a browser tab, over a USB cable and a Wisp server</td>
   </tr>
   <tr>
+    <td><a href="https://github.com/wonderhoy-labs/shiho"><img src="https://raw.githubusercontent.com/wonderhoy-labs/.github/main/profile/icons/shiho.png" alt="" width="64" height="64"></a></td>
+    <td><a href="https://github.com/wonderhoy-labs/shiho"><strong>Shiho</strong></a><br>Get your Android phone online through Chrome's Direct Sockets, over a USB cable</td>
+  </tr>
+  <tr>
     <td><a href="https://github.com/wonderhoy-labs/akiyama"><img src="https://raw.githubusercontent.com/wonderhoy-labs/.github/main/profile/icons/akiyama.png" alt="" width="64" height="64"></a></td>
     <td><a href="https://github.com/wonderhoy-labs/akiyama"><strong>Akiyama</strong></a><br>Full-duplex networking over a USB cable between Android, macOS, Linux and Windows</td>
   </tr>
   <tr>
     <td><a href="https://github.com/wonderhoy-labs/saki"><img src="https://raw.githubusercontent.com/wonderhoy-labs/.github/main/profile/icons/saki.png" alt="" width="64" height="64"></a></td>
     <td><a href="https://github.com/wonderhoy-labs/saki"><strong>Saki</strong></a><br>Full-duplex networking over Bluetooth between Android, macOS and Linux</td>
-  </tr>
-  <tr>
-    <td><a href="https://github.com/wonderhoy-labs/shiho"><img src="https://raw.githubusercontent.com/wonderhoy-labs/.github/main/profile/icons/shiho.png" alt="" width="64" height="64"></a></td>
-    <td><a href="https://github.com/wonderhoy-labs/shiho"><strong>Shiho</strong></a><br>Your phone online through your computer, from an Isolated Web App: Direct Sockets, one USB cable and Shira's VPN</td>
   </tr>
 </table>
