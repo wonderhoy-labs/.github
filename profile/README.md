@@ -12,7 +12,7 @@ A collection of vibecoded slop (Opus 5.5 <3) made by me ([Hazelcaffe](https://gi
   </tr>
   <tr>
     <td><a href="https://github.com/wonderhoy-labs/asahi"><img src="https://raw.githubusercontent.com/wonderhoy-labs/.github/main/profile/icons/asahi.png" alt="" width="64" height="64"></a></td>
-    <td><a href="https://github.com/wonderhoy-labs/asahi"><strong>Asahi</strong></a><br>Shira and Shinonome in one: your Pixel's desktop in a browser tab, online through the same USB cable</td>
+    <td><a href="https://github.com/wonderhoy-labs/asahi"><strong>Asahi</strong></a><br>Your whole phone in a browser tab: Android's desktop, screen and apps, Linux apps and machines, online through one USB cable</td>
   </tr>
   <tr>
     <td><a href="https://github.com/wonderhoy-labs/airi"><img src="https://raw.githubusercontent.com/wonderhoy-labs/.github/main/profile/icons/airi.png" alt="" width="64" height="64"></a></td>
